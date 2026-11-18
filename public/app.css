@@ -1,0 +1,269 @@
+:root {
+  --primary: #ad1457;
+  --primary-dark: #880e4f;
+  --accent: #ec407a;
+  --bg: #0f0f12;
+  --card: #1a1a20;
+  --text: #f3f4f6;
+  --border: #2e2e38;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.topbar {
+  background: linear-gradient(135deg, #000000 0%, var(--primary-dark) 100%);
+  color: #fff;
+  padding: 18px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--primary);
+}
+
+.topbar h1 {
+  font-size: 1.5rem;
+}
+
+.topbar p {
+  font-size: 0.9rem;
+  color: #f8bbd0;
+  margin-top: 4px;
+}
+
+.tabs {
+  background: #141418;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 14px 18px;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  cursor: pointer;
+  color: #9ca3af;
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tab-btn:hover {
+  color: #f48fb1;
+}
+
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.container {
+  max-width: 1280px;
+  margin: 24px auto;
+  padding: 0 20px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.card h2, .card h3 {
+  font-size: 1.15rem;
+  margin-bottom: 14px;
+  color: #f48fb1;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th, td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+th {
+  background: #121216;
+  color: #f8bbd0;
+  font-weight: 600;
+}
+
+input, select {
+  width: 100%;
+  padding: 9px 10px;
+  background: #121216;
+  color: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #d1d5db;
+  margin-bottom: 4px;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: 2fr 1.3fr 1fr 1.2fr auto;
+  gap: 6px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.btn {
+  padding: 9px 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.88rem;
+  transition: background 0.2s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-secondary {
+  background: #2a2a35;
+  color: #f3f4f6;
+  margin-bottom: 12px;
+}
+
+.btn-secondary:hover {
+  background: #383846;
+}
+
+.btn-light {
+  background: #000000;
+  color: #f48fb1;
+  border: 1px solid var(--accent);
+}
+
+.btn-light:hover {
+  background: var(--primary-dark);
+  color: #ffffff;
+}
+
+.btn-danger {
+  background: #991b1b;
+  color: #fff;
+  padding: 5px 9px;
+}
+
+.btn-sm {
+  padding: 5px 9px;
+  font-size: 0.8rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.total-banner {
+  background: #26101b;
+  border: 1px solid var(--primary);
+  color: #f8bbd0;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 12px 0;
+}
+
+.highlight-box {
+  background: #121216;
+  border-left: 4px solid var(--accent);
+  padding: 14px;
+  border-radius: 4px;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+.badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.badge-ok { background: #14532d; color: #86efac; }
+.badge-low { background: #4c0519; color: #fda4af; }
+.badge-partial { background: #451a03; color: #fcd34d; }
+
+.alert {
+  max-width: 1240px;
+  margin: 16px auto 0;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.alert.hidden { display: none; }
+.alert.success { background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; }
+.alert.error { background: #4c0519; color: #fecdd3; border: 1px solid #f43f5e; }

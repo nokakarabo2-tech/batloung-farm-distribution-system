@@ -1,0 +1,457 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Batloung Farm Distribution System</title>
+  <style>
+    :root { --primary: #ad1457; --primary-dark: #880e4f; --accent: #f06292; --bg: #09090b; --sidebar: #111115; --card: #16161c; --text: #f4f4f5; --muted: #a1a1aa; --border: #27272a; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { background: var(--bg); color: var(--text); }
+    .app-shell { display: flex; min-height: 100vh; }
+    .sidebar { width: 250px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 22px 14px; flex-shrink: 0; }
+    .brand { display: flex; align-items: center; gap: 12px; padding-bottom: 18px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+    .brand-badge { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .brand h2 { font-size: 1.05rem; color: #fff; }
+    .brand span { font-size: 0.78rem; color: var(--accent); }
+    .side-nav { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .tab-btn { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--muted); font-weight: 600; font-size: 0.92rem; cursor: pointer; text-align: left; width: 100%; }
+    .tab-btn:hover { background: #1e1e26; color: #fff; }
+    .tab-btn.active { background: rgba(173, 20, 87, 0.25); color: #fff; border-color: var(--primary); }
+    .sidebar-footer { padding-top: 14px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--muted); }
+    .sidebar-footer p { margin-bottom: 10px; }
+    .main-wrapper { flex: 1; padding: 24px 28px; overflow-x: auto; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 22px; }
+    .topbar h1 { font-size: 1.4rem; color: #fff; }
+    .topbar p { font-size: 0.86rem; color: var(--muted); margin-top: 3px; }
+    .live-pill { background: #14532d; color: #86efac; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #22c55e; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    .stack-col { display: flex; flex-direction: column; gap: 20px; }
+    @media (max-width: 1000px) { .app-shell { flex-direction: column; } .sidebar { width: 100%; } .grid-2 { grid-template-columns: 1fr; } }
+    .card { background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
+    .card h2, .card h3 { font-size: 1.05rem; margin-bottom: 14px; color: #f8bbd0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { background: #111115; color: var(--accent); font-weight: 600; }
+    input, select { width: 100%; padding: 9px 10px; background: #0f0f13; color: #fff; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 10px; font-size: 0.88rem; }
+    label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+    .form-grid { display: flex; flex-direction: column; }
+    .form-row { display: flex; gap: 10px; align-items: center; }
+    .flex-1 { flex: 1; }
+    .item-row { display: grid; grid-template-columns: 2fr 1.3fr 1fr 1.2fr auto; gap: 6px; margin-bottom: 8px; align-items: center; }
+    .btn { padding: 9px 14px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.86rem; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: #27272a; color: #f4f4f5; margin-bottom: 12px; }
+    .btn-light { background: #1c1c24; color: var(--accent); border: 1px solid var(--primary); }
+    .btn-danger { background: #991b1b; color: #fff; padding: 5px 9px; }
+    .btn-sm { padding: 5px 9px; font-size: 0.78rem; }
+    .full-width { width: 100%; }
+    .total-banner { background: rgba(173, 20, 87, 0.15); border: 1px solid var(--primary); color: #f8bbd0; padding: 12px; border-radius: 6px; font-weight: 700; margin: 12px 0; }
+    .highlight-box { background: #111115; border-left: 4px solid var(--accent); padding: 14px; border-radius: 6px; margin-top: 10px; line-height: 1.6; }
+    .badge { padding: 3px 9px; border-radius: 12px; font-size: 0.76rem; font-weight: 600; }
+    .badge-ok { background: #14532d; color: #86efac; }
+    .badge-low { background: #4c0519; color: #fda4af; }
+    .badge-partial { background: #451a03; color: #fcd34d; }
+    .alert { margin-bottom: 18px; padding: 12px 18px; border-radius: 8px; font-weight: 600; }
+    .alert.hidden { display: none; }
+    .alert.success { background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; }
+    .alert.error { background: #4c0519; color: #fecdd3; border: 1px solid #f43f5e; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-badge">BF</div>
+        <div><h2>Batloung Farm</h2><span>Distribution Portal</span></div>
+      </div>
+      <nav class="side-nav">
+        <button type="button" class="tab-btn active" onclick="switchView('stockTab', this)">📦 Fruits & Stock</button>
+        <button type="button" class="tab-btn" onclick="switchView('purchasesTab', this)">🛒 Purchases</button>
+        <button type="button" class="tab-btn" onclick="switchView('salesTab', this)">💳 Sales & Payments</button>
+        <button type="button" class="tab-btn" onclick="switchView('suppliersTab', this)">🤝 Suppliers & Vendors</button>
+        <button type="button" class="tab-btn" onclick="switchView('reportsTab', this)">📊 SQL Reports</button>
+      </nav>
+      <div class="sidebar-footer">
+        <p>📍 Maseru, Lesotho</p>
+        <button type="button" class="btn btn-light full-width" onclick="refreshAll()">↻ Sync Live Data</button>
+      </div>
+    </aside>
+
+    <script>
+      function switchView(tabId, clickedBtn) {
+        var sections = document.querySelectorAll('.tab-content');
+        for (var i = 0; i < sections.length; i++) {
+          sections[i].style.display = 'none';
+          sections[i].classList.remove('active');
+        }
+        var buttons = document.querySelectorAll('.tab-btn');
+        for (var j = 0; j < buttons.length; j++) {
+          buttons[j].classList.remove('active');
+        }
+        var activeSection = document.getElementById(tabId);
+        if (activeSection) {
+          activeSection.style.display = 'block';
+          activeSection.classList.add('active');
+        }
+        if (clickedBtn) {
+          clickedBtn.classList.add('active');
+        }
+      }
+    </script>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div>
+          <h1>Distribution Management System</h1>
+          <p>Real-time stock tracking, supplier intake, vendor sales & credit balances</p>
+        </div>
+        <div class="live-pill">● Database Connected</div>
+      </header>
+
+      <div id="alertBox" class="alert hidden"></div>
+
+      <main>
+        <section id="stockTab" class="tab-content active">
+          <div class="grid-2">
+            <div class="card">
+              <h2>Stock Levels by Packaging Size</h2>
+              <table><thead><tr><th>Fruit</th><th>Size</th><th>Available Boxes</th><th>Status</th></tr></thead><tbody id="stockTableBody"></tbody></table>
+            </div>
+            <div class="stack-col">
+              <div class="card">
+                <h2>Low Stock Alerts (≤ 10 Boxes)</h2>
+                <table><thead><tr><th>Fruit</th><th>Size</th><th>Remaining</th></tr></thead><tbody id="lowStockTableBody"></tbody></table>
+              </div>
+              <div class="card">
+                <h2>Register New Fruit Type</h2>
+                <form id="fruitForm" class="form-grid">
+                  <input type="text" id="fruitName" placeholder="Fruit Name (e.g. Pears)" required />
+                  <input type="text" id="fruitDesc" placeholder="Description" />
+                  <button type="submit" class="btn btn-primary">Add Fruit</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="purchasesTab" class="tab-content">
+          <div class="grid-2">
+            <div class="card">
+              <h2>Record Supplier Purchase</h2>
+              <form id="purchaseForm">
+                <label>Select Supplier</label>
+                <select id="purchaseSupplierSelect" required></select>
+                <div id="purchaseItemsContainer"></div>
+                <button type="button" class="btn btn-secondary" onclick="addPurchaseItemRow()">+ Add Fruit Item</button>
+                <div class="total-banner">Calculated Total Cost: M <span id="purchaseTotalDisplay">0.00</span></div>
+                <button type="submit" class="btn btn-primary full-width">Submit Purchase & Increase Stock</button>
+              </form>
+            </div>
+            <div class="card">
+              <h2>Recent Purchases</h2>
+              <table><thead><tr><th>ID</th><th>Supplier</th><th>Date</th><th>Total (M)</th></tr></thead><tbody id="purchasesTableBody"></tbody></table>
+            </div>
+          </div>
+        </section>
+        <section id="salesTab" class="tab-content">
+          <div class="grid-2">
+            <div class="card">
+              <h2>Record Vendor Sale (Atomic Transaction)</h2>
+              <form id="saleForm">
+                <label>Select Registered Vendor</label>
+                <select id="saleVendorSelect" required></select>
+                <div id="saleItemsContainer"></div>
+                <button type="button" class="btn btn-secondary" onclick="addSaleItemRow()">+ Add Fruit Item</button>
+                <div class="form-row">
+                  <div class="flex-1">
+                    <label>Payment Method</label>
+                    <select id="salePaymentMethod"><option value="Cash">Cash</option><option value="Mobile Money">Mobile Money</option><option value="Credit">Credit (Pay Later)</option></select>
+                  </div>
+                  <div class="flex-1">
+                    <label>Amount Paid Now (M)</label>
+                    <input type="number" id="saleAmountPaid" step="0.01" min="0" value="0" required />
+                  </div>
+                </div>
+                <div class="total-banner">Total Selling Price: M <span id="saleTotalDisplay">0.00</span></div>
+                <button type="submit" class="btn btn-primary full-width">Complete Sale & Deduct Stock</button>
+              </form>
+            </div>
+            <div class="stack-col">
+              <div class="card">
+                <h2>Vendor Outstanding Balances</h2>
+                <table><thead><tr><th>Vendor</th><th>Billed (M)</th><th>Paid (M)</th><th>Balance (M)</th></tr></thead><tbody id="balancesTableBody"></tbody></table>
+              </div>
+              <div class="card">
+                <h2>Sales History & Payment Status</h2>
+                <table><thead><tr><th>ID</th><th>Vendor</th><th>Method</th><th>Status</th><th>Total</th><th>Balance</th><th>Action</th></tr></thead><tbody id="salesTableBody"></tbody></table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="suppliersTab" class="tab-content">
+          <div class="grid-2">
+            <div class="card">
+              <h2>Register Supplier</h2>
+              <form id="supplierForm" class="form-grid">
+                <input type="text" id="supName" placeholder="Business Name" required />
+                <input type="text" id="supContact" placeholder="Contact Person" required />
+                <input type="text" id="supPhone" placeholder="Phone (+27...)" required />
+                <select id="supProvince" required>
+                  <option value="Free State">Free State</option><option value="Gauteng">Gauteng</option><option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                  <option value="Western Cape">Western Cape</option><option value="Eastern Cape">Eastern Cape</option><option value="Limpopo">Limpopo</option>
+                  <option value="Mpumalanga">Mpumalanga</option><option value="North West">North West</option><option value="Northern Cape">Northern Cape</option>
+                </select>
+                <input type="text" id="supAddress" placeholder="Full Address" required />
+                <button type="submit" class="btn btn-primary">Save Supplier</button>
+              </form>
+              <h3 style="margin-top: 20px;">Registered Suppliers</h3>
+              <table><thead><tr><th>Business</th><th>Province</th><th>Phone</th><th>Action</th></tr></thead><tbody id="suppliersTableBody"></tbody></table>
+            </div>
+            <div class="card">
+              <h2>Register Vendor</h2>
+              <form id="vendorForm" class="form-grid">
+                <input type="text" id="venName" placeholder="Vendor / Stall Name" required />
+                <input type="text" id="venPhone" placeholder="Phone (+266...)" required />
+                <input type="text" id="venLocation" placeholder="Location in Lesotho" required />
+                <button type="submit" class="btn btn-primary">Save Vendor</button>
+              </form>
+              <h3 style="margin-top: 20px;">Search & View Vendors</h3>
+              <input type="text" id="vendorSearchInput" placeholder="Search by vendor name or phone..." oninput="searchVendors()" />
+              <table><thead><tr><th>Vendor Name</th><th>Phone</th><th>Location</th></tr></thead><tbody id="vendorsTableBody"></tbody></table>
+            </div>
+          </div>
+        </section>
+
+        <section id="reportsTab" class="tab-content">
+          <div class="grid-2">
+            <div class="stack-col">
+              <div class="card">
+                <h2>1. Top 5 Most Frequently Sold Fruits</h2>
+                <table><thead><tr><th>Fruit</th><th>Times Sold</th><th>Total Boxes Sold</th></tr></thead><tbody id="topFruitsBody"></tbody></table>
+              </div>
+              <div class="card">
+                <h2>3. Top Purchasing Vendor</h2>
+                <div id="topVendorBox" class="highlight-box">Loading...</div>
+              </div>
+            </div>
+            <div class="stack-col">
+              <div class="card">
+                <h2>2. Sales Revenue by Date Range</h2>
+                <div class="form-row">
+                  <input type="date" id="repStartDate" value="2026-01-01" />
+                  <input type="date" id="repEndDate" value="2026-12-31" />
+                  <button type="button" class="btn btn-primary" onclick="loadRevenueReport()">Generate</button>
+                </div>
+                <div id="revenueResultBox" class="highlight-box">Select dates and click Generate.</div>
+              </div>
+              <div class="card">
+                <h2>4. Current Stock Summary Report</h2>
+                <table><thead><tr><th>Fruit</th><th>Packaging Size</th><th>Available Quantity</th></tr></thead><tbody id="reportStockBody"></tbody></table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    const API_BASE = '/api';
+    let cachedFruits = [];
+
+    function showAlert(message, type = 'success') {
+      const box = document.getElementById('alertBox');
+      box.textContent = message;
+      box.className = 'alert ' + type;
+      setTimeout(() => { box.className = 'alert hidden'; }, 6000);
+    }
+
+    async function fetchJSON(url, options = {}) {
+      const res = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...options });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Request failed');
+      return data;
+    }
+
+    async function loadStockAndFruits() {
+      const [fruitsRes, stockRes, lowRes] = await Promise.all([
+        fetchJSON(API_BASE + '/fruits'), fetchJSON(API_BASE + '/fruits/stock'), fetchJSON(API_BASE + '/fruits/stock/low?threshold=10')
+      ]);
+      cachedFruits = fruitsRes.data;
+      document.getElementById('stockTableBody').innerHTML = stockRes.data.map(s => `
+        <tr><td><strong>${s.fruit_name}</strong></td><td style="text-transform:capitalize;">${s.packaging_size}</td><td>${s.available_quantity}</td>
+        <td><span class="badge ${s.available_quantity <= 10 ? 'badge-low' : 'badge-ok'}">${s.available_quantity <= 10 ? 'Low Stock' : 'In Stock'}</span></td></tr>`).join('');
+      document.getElementById('lowStockTableBody').innerHTML = lowRes.data.length
+        ? lowRes.data.map(s => `<tr><td>${s.fruit_name}</td><td style="text-transform:capitalize;">${s.packaging_size}</td><td><strong>${s.available_quantity}</strong></td></tr>`).join('')
+        : '<tr><td colspan="3">All items are well stocked.</td></tr>';
+    }
+
+    document.getElementById('fruitForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await fetchJSON(API_BASE + '/fruits', { method: 'POST', body: JSON.stringify({ fruit_name: document.getElementById('fruitName').value, description: document.getElementById('fruitDesc').value }) });
+        e.target.reset(); showAlert('Fruit registered with small, medium, and large stock initialized.'); await refreshAll();
+      } catch (err) { showAlert(err.message, 'error'); }
+    });
+
+    async function loadSuppliersAndVendors() {
+      const [supRes, venRes] = await Promise.all([fetchJSON(API_BASE + '/suppliers'), fetchJSON(API_BASE + '/vendors')]);
+      document.getElementById('suppliersTableBody').innerHTML = supRes.data.map(s => `
+        <tr><td>${s.business_name}</td><td>${s.province}</td><td>${s.phone}</td>
+        <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteSupplier(${s.supplier_id})">Delete</button></td></tr>`).join('');
+      document.getElementById('purchaseSupplierSelect').innerHTML = supRes.data.map(s => `<option value="${s.supplier_id}">${s.business_name} (${s.province})</option>`).join('');
+      renderVendorsTable(venRes.data);
+      document.getElementById('saleVendorSelect').innerHTML = venRes.data.map(v => `<option value="${v.vendor_id}">${v.vendor_name} - ${v.location}</option>`).join('');
+    }
+
+    function renderVendorsTable(vendors) {
+      document.getElementById('vendorsTableBody').innerHTML = vendors.map(v => `<tr><td>${v.vendor_name}</td><td>${v.phone_number}</td><td>${v.location}</td></tr>`).join('');
+    }
+
+    async function searchVendors() {
+      const q = document.getElementById('vendorSearchInput').value.trim();
+      const res = q ? await fetchJSON(API_BASE + '/vendors/search?q=' + encodeURIComponent(q)) : await fetchJSON(API_BASE + '/vendors');
+      renderVendorsTable(res.data);
+    }
+
+    document.getElementById('supplierForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await fetchJSON(API_BASE + '/suppliers', { method: 'POST', body: JSON.stringify({
+          business_name: document.getElementById('supName').value, contact_person: document.getElementById('supContact').value,
+          phone: document.getElementById('supPhone').value, province: document.getElementById('supProvince').value, address: document.getElementById('supAddress').value
+        }) });
+        e.target.reset(); showAlert('Supplier registered successfully.'); await loadSuppliersAndVendors();
+      } catch (err) { showAlert(err.message, 'error'); }
+    });
+
+    async function deleteSupplier(id) {
+      try { await fetchJSON(API_BASE + '/suppliers/' + id, { method: 'DELETE' }); showAlert('Supplier deleted.'); await loadSuppliersAndVendors(); }
+      catch (err) { showAlert(err.message, 'error'); }
+    }
+
+    document.getElementById('vendorForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await fetchJSON(API_BASE + '/vendors', { method: 'POST', body: JSON.stringify({
+          vendor_name: document.getElementById('venName').value, phone_number: document.getElementById('venPhone').value, location: document.getElementById('venLocation').value
+        }) });
+        e.target.reset(); showAlert('Vendor registered successfully.'); await loadSuppliersAndVendors();
+      } catch (err) { showAlert(err.message, 'error'); }
+    });
+    function buildFruitOptions() { return cachedFruits.map(f => `<option value="${f.fruit_id}">${f.fruit_name}</option>`).join(''); }
+
+    function addPurchaseItemRow() {
+      const row = document.createElement('div'); row.className = 'item-row';
+      row.innerHTML = `<select class="p-fruit">${buildFruitOptions()}</select><select class="p-size"><option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option></select>
+        <input type="number" class="p-qty" min="1" value="5" oninput="recalcPurchaseTotal()" required /><input type="number" class="p-cost" min="0" step="0.01" value="40" oninput="recalcPurchaseTotal()" required />
+        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove(); recalcPurchaseTotal()">X</button>`;
+      document.getElementById('purchaseItemsContainer').appendChild(row); recalcPurchaseTotal();
+    }
+
+    function recalcPurchaseTotal() {
+      let total = 0;
+      document.querySelectorAll('#purchaseItemsContainer .item-row').forEach(r => total += Number(r.querySelector('.p-qty').value || 0) * Number(r.querySelector('.p-cost').value || 0));
+      document.getElementById('purchaseTotalDisplay').textContent = total.toFixed(2);
+    }
+
+    document.getElementById('purchaseForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const items = Array.from(document.querySelectorAll('#purchaseItemsContainer .item-row')).map(r => ({
+        fruit_id: Number(r.querySelector('.p-fruit').value), packaging_size: r.querySelector('.p-size').value,
+        quantity: Number(r.querySelector('.p-qty').value), unit_cost: Number(r.querySelector('.p-cost').value)
+      }));
+      try {
+        await fetchJSON(API_BASE + '/purchases', { method: 'POST', body: JSON.stringify({ supplier_id: Number(document.getElementById('purchaseSupplierSelect').value), items }) });
+        showAlert('Purchase recorded and stock updated!'); await refreshAll();
+      } catch (err) { showAlert(err.message, 'error'); }
+    });
+
+    async function loadPurchases() {
+      const res = await fetchJSON(API_BASE + '/purchases');
+      document.getElementById('purchasesTableBody').innerHTML = res.data.map(p => `<tr><td>#${p.purchase_id}</td><td>${p.supplier_name}</td><td>${new Date(p.purchase_date).toLocaleDateString()}</td><td>M ${Number(p.total_amount).toFixed(2)}</td></tr>`).join('');
+    }
+
+    function addSaleItemRow() {
+      const row = document.createElement('div'); row.className = 'item-row';
+      row.innerHTML = `<select class="s-fruit">${buildFruitOptions()}</select><select class="s-size"><option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option></select>
+        <input type="number" class="s-qty" min="1" value="2" oninput="recalcSaleTotal()" required /><input type="number" class="s-price" min="0" step="0.01" value="65" oninput="recalcSaleTotal()" required />
+        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove(); recalcSaleTotal()">X</button>`;
+      document.getElementById('saleItemsContainer').appendChild(row); recalcSaleTotal();
+    }
+
+    function recalcSaleTotal() {
+      let total = 0;
+      document.querySelectorAll('#saleItemsContainer .item-row').forEach(r => total += Number(r.querySelector('.s-qty').value || 0) * Number(r.querySelector('.s-price').value || 0));
+      document.getElementById('saleTotalDisplay').textContent = total.toFixed(2);
+    }
+
+    document.getElementById('saleForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const items = Array.from(document.querySelectorAll('#saleItemsContainer .item-row')).map(r => ({
+        fruit_id: Number(r.querySelector('.s-fruit').value), packaging_size: r.querySelector('.s-size').value,
+        quantity: Number(r.querySelector('.s-qty').value), unit_price: Number(r.querySelector('.s-price').value)
+      }));
+      try {
+        await fetchJSON(API_BASE + '/sales', { method: 'POST', body: JSON.stringify({
+          vendor_id: Number(document.getElementById('saleVendorSelect').value), payment_method: document.getElementById('salePaymentMethod').value,
+          amount_paid: Number(document.getElementById('saleAmountPaid').value), items
+        }) });
+        showAlert('Sale completed and stock deducted!'); await refreshAll();
+      } catch (err) { showAlert(err.message, 'error'); }
+    });
+
+    async function loadSalesAndBalances() {
+      const [salesRes, balRes] = await Promise.all([fetchJSON(API_BASE + '/sales'), fetchJSON(API_BASE + '/sales/balances')]);
+      document.getElementById('balancesTableBody').innerHTML = balRes.data.map(b => `<tr><td>${b.vendor_name}</td><td>${Number(b.total_billed).toFixed(2)}</td><td>${Number(b.total_paid).toFixed(2)}</td><td><strong>M ${Number(b.outstanding_balance).toFixed(2)}</strong></td></tr>`).join('');
+      document.getElementById('salesTableBody').innerHTML = salesRes.data.map(s => {
+        const badge = s.payment_status === 'PAID' ? 'badge-ok' : (s.payment_status === 'PARTIALLY_PAID' ? 'badge-partial' : 'badge-low');
+        return `<tr><td>#${s.sale_id}</td><td>${s.vendor_name}</td><td>${s.payment_method}</td><td><span class="badge ${badge}">${s.payment_status}</span></td>
+          <td>M ${Number(s.total_amount).toFixed(2)}</td><td>M ${Number(s.outstanding_balance).toFixed(2)}</td>
+          <td>${Number(s.outstanding_balance) > 0 ? `<button type="button" class="btn btn-primary btn-sm" onclick="payBalance(${s.sale_id}, ${s.outstanding_balance})">Settle</button>` : '✓'}</td></tr>`;
+      }).join('');
+    }
+
+    async function payBalance(saleId, remaining) {
+      const input = prompt('Enter payment amount (Remaining balance: M ' + Number(remaining).toFixed(2) + '):', remaining);
+      if (!input) return;
+      try {
+        await fetchJSON(API_BASE + '/sales/' + saleId + '/pay', { method: 'PUT', body: JSON.stringify({ additional_payment: Number(input), payment_method: 'Mobile Money' }) });
+        showAlert('Payment updated successfully!'); await refreshAll();
+      } catch (err) { showAlert(err.message, 'error'); }
+    }
+
+    async function loadReports() {
+      const [topFruitsRes, topVendorRes, stockRes] = await Promise.all([fetchJSON(API_BASE + '/reports/top-fruits'), fetchJSON(API_BASE + '/reports/top-vendor'), fetchJSON(API_BASE + '/reports/stock')]);
+      document.getElementById('topFruitsBody').innerHTML = topFruitsRes.data.length
+        ? topFruitsRes.data.map(f => `<tr><td>${f.fruit_name}</td><td>${f.times_sold}</td><td><strong>${f.total_boxes_sold}</strong></td></tr>`).join('')
+        : '<tr><td colspan="3">No sales recorded yet.</td></tr>';
+      const tv = topVendorRes.data;
+      document.getElementById('topVendorBox').innerHTML = tv ? `<strong>${tv.vendor_name}</strong> (${tv.location}) — Total Boxes Purchased: <strong>${tv.total_boxes_purchased}</strong>` : 'No vendor purchases recorded yet.';
+      document.getElementById('reportStockBody').innerHTML = stockRes.data.map(s => `<tr><td>${s.fruit_name}</td><td style="text-transform:capitalize;">${s.packaging_size}</td><td>${s.available_quantity}</td></tr>`).join('');
+      await loadRevenueReport();
+    }
+
+    async function loadRevenueReport() {
+      const startDate = document.getElementById('repStartDate').value, endDate = document.getElementById('repEndDate').value;
+      try {
+        const res = await fetchJSON(API_BASE + '/reports/revenue?startDate=' + startDate + '&endDate=' + endDate);
+        const d = res.data;
+        document.getElementById('revenueResultBox').innerHTML = `Transactions: <strong>${d.total_transactions}</strong><br/>Total Sales Revenue: <strong>M ${Number(d.total_revenue).toFixed(2)}</strong><br/>Total Collected: <strong>M ${Number(d.total_collected).toFixed(2)}</strong> | Outstanding Credit: <strong>M ${Number(d.total_outstanding).toFixed(2)}</strong>`;
+      } catch (err) { showAlert(err.message, 'error'); }
+    }
+
+    async function refreshAll() {
+      await loadStockAndFruits(); await loadSuppliersAndVendors(); await loadPurchases(); await loadSalesAndBalances(); await loadReports();
+      if (document.getElementById('purchaseItemsContainer').children.length === 0) addPurchaseItemRow();
+      if (document.getElementById('saleItemsContainer').children.length === 0) addSaleItemRow();
+    }
+
+    window.addEventListener('DOMContentLoaded', refreshAll);
+  </script>
+</body>
+</html>
